@@ -1,25 +1,24 @@
-// app/adminLogin.tsx
 import { useAuth } from "@/contexts/AuthContext";
 import { loginStyles } from "@/styles/loginStyles";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-export default function AdminLoginScreen() {
+export default function UserLoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { setUserType } = useAuth();
 
-  const handleUserLoginButton = () => {
-    router.push("/userLogin");
+  const mockHomeButton = () => {
+    router.push("/(tabs)");
   };
 
   const handleLogin = () => {
     setErrorMessage(null);
 
     if (!email) {
-      setErrorMessage("관리자 이메일을 입력해주세요.");
+      setErrorMessage("이메일을 입력해주세요.");
       return;
     }
 
@@ -28,27 +27,30 @@ export default function AdminLoginScreen() {
       return;
     }
 
-    // 관리자 로그인 검증
-    if (email === "admin" && password === "admin123") {
-      setUserType("admin");
-      router.replace("/(admin-tabs)");
+    // 로그인 검증
+    if (email === "24000000" && password === "test1234") {
+      setUserType("user");
+      router.push("/onboarding/firstWelcomeText");
     } else {
-      setErrorMessage("관리자 이메일 또는 비밀번호가 일치하지 않습니다.");
+      setErrorMessage("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
   };
 
   return (
     <View style={loginStyles.container}>
-      <View style={loginStyles.content}>
-        <Text style={loginStyles.title}>관리자 로그인</Text>
+      <View style={loginStyles.topSpacer} />
 
+      <View style={loginStyles.logoContainer}>
+        <Image source={require("@/assets/images/logo.png")} style={{ width: 140, height: 160 }} resizeMode='contain' />
+      </View>
+      <View style={loginStyles.content}>
         <TextInput
           style={loginStyles.input}
-          placeholder='관리자 이메일'
+          placeholder='학번/아이디'
           value={email}
           onChangeText={setEmail}
           autoCapitalize='none'
-          keyboardType='email-address'
+          placeholderTextColor='#B3B3B3'
         />
 
         <TextInput
@@ -57,6 +59,7 @@ export default function AdminLoginScreen() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          placeholderTextColor='#B3B3B3'
         />
 
         {errorMessage && (
@@ -64,18 +67,13 @@ export default function AdminLoginScreen() {
         )}
 
         <TouchableOpacity
-          style={loginStyles.loginButton}
+          style={loginStyles.buttonText}
           onPress={handleLogin}>
-          <Text style={loginStyles.buttonText}>로그인</Text>
+          <Text style={loginStyles.nextLabel}>로그인</Text>
         </TouchableOpacity>
-
-        <View style={loginStyles.secondaryContainer}>
-          <Text style={loginStyles.secondary}>사용자이신가요? </Text>
-          <TouchableOpacity onPress={handleUserLoginButton}>
-            <Text style={loginStyles.secondaryText}>사용자 로그인하기</Text>
-          </TouchableOpacity>
-        </View>
       </View>
+      
+      <View style={loginStyles.bottomSpacer} />
     </View>
   );
 }

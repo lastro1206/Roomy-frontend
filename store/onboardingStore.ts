@@ -7,6 +7,7 @@ interface OnboardingData {
   birthYear: number | null;
   kakaoId: string | null;
   mbti: string | null;
+  createdUserId: number | null;
 
   // 생활 패턴
   smoker: boolean | null;
@@ -22,6 +23,12 @@ interface OnboardingData {
   hobby: string | null;
   selfDescription: string | null;
   roommateDescription: string | null;
+
+  // 매칭 선호도
+  preferNonSmoker: boolean;
+  preferGoodAtBugs: boolean;
+  preferQuietSleeper: boolean;
+  preferNonDrinker: boolean;
 }
 
 interface OnboardingStore extends OnboardingData {
@@ -29,6 +36,7 @@ interface OnboardingStore extends OnboardingData {
   setGender: (gender: string) => void;
   setBirthYear: (birthYear: number) => void;
   setKakaoId: (kakaoId: string) => void;
+  setCreatedUserId: (id: number | null) => void;
   setMbti: (mbti: string) => void;
   setSmoker: (smoker: boolean) => void;
   setSnoring: (snoring: boolean) => void;
@@ -41,6 +49,10 @@ interface OnboardingStore extends OnboardingData {
   setHobby: (hobby: string) => void;
   setSelfDescription: (selfDescription: string) => void;
   setRoommateDescription: (roommateDescription: string) => void;
+  setPreferNonSmoker: (preferNonSmoker: boolean) => void;
+  setPreferGoodAtBugs: (preferGoodAtBugs: boolean) => void;
+  setPreferQuietSleeper: (preferQuietSleeper: boolean) => void;
+  setPreferNonDrinker: (preferNonDrinker: boolean) => void;
   reset: () => void;
 }
 
@@ -50,6 +62,7 @@ const initialState: OnboardingData = {
   birthYear: null,
   kakaoId: null,
   mbti: null,
+  createdUserId: null,
   smoker: null,
   snoring: null,
   bugKiller: null,
@@ -61,6 +74,10 @@ const initialState: OnboardingData = {
   hobby: null,
   selfDescription: null,
   roommateDescription: null,
+  preferNonSmoker: false,
+  preferGoodAtBugs: false,
+  preferQuietSleeper: false,
+  preferNonDrinker: false,
 };
 
 export const useOnboardingStore = create<OnboardingStore>((set) => ({
@@ -69,6 +86,7 @@ export const useOnboardingStore = create<OnboardingStore>((set) => ({
   setGender: (gender) => set({ gender }),
   setBirthYear: (birthYear) => set({ birthYear }),
   setKakaoId: (kakaoId) => set({ kakaoId }),
+  setCreatedUserId: (id) => set({ createdUserId: id }),
   setMbti: (mbti) => set({ mbti }),
   setSmoker: (smoker) => set({ smoker }),
   setSnoring: (snoring) => set({ snoring }),
@@ -81,6 +99,10 @@ export const useOnboardingStore = create<OnboardingStore>((set) => ({
   setHobby: (hobby) => set({ hobby }),
   setSelfDescription: (selfDescription) => set({ selfDescription }),
   setRoommateDescription: (roommateDescription) => set({ roommateDescription }),
+  setPreferNonSmoker: (preferNonSmoker) => set({ preferNonSmoker }),
+  setPreferGoodAtBugs: (preferGoodAtBugs) => set({ preferGoodAtBugs }),
+  setPreferQuietSleeper: (preferQuietSleeper) => set({ preferQuietSleeper }),
+  setPreferNonDrinker: (preferNonDrinker) => set({ preferNonDrinker }),
   reset: () => set(initialState),
 }));
 

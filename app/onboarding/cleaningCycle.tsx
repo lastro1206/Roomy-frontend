@@ -1,10 +1,11 @@
-import { onboardingStyles } from "@/styles/onboarding";
+import { OnboardingHeader } from "@/components/OnboardingHeader";
 import { convertCleaningCycleToEnum } from "@/hooks/cleaningCycle";
 import { useOnboardingStore } from "@/store/onboardingStore";
+import { onboardingStyles } from "@/styles/onboarding";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Pressable, View } from "react-native";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CleaningCycleScreen() {
@@ -26,37 +27,53 @@ export default function CleaningCycleScreen() {
   };
 
   const handleNext = () => {
-    if (!cleaningCycle) {
-      return;
-    }
+    if (!cleaningCycle) return;
     router.push("/onboarding/drinking");
   };
 
   return (
     <SafeAreaView style={onboardingStyles.container}>
-      <Text
-        variant='headlineMedium'
-        style={onboardingStyles.title}>
-        청소 주기를 선택해주세요.
-      </Text>
+      <OnboardingHeader progress={0.55} />
+
+      <Text style={onboardingStyles.title}>청소 주기를 선택해주세요</Text>
+
       <View style={onboardingStyles.buttonContainer}>
         {cycleOptions.map((option) => (
-          <Button
+          <Pressable
             key={option}
-            mode={cleaningCycle === option ? "contained" : "outlined"}
-            onPress={() => handleCycleSelect(option)}
-            style={onboardingStyles.button}>
-            {option}
-          </Button>
+            style={[
+              onboardingStyles.optionButton,
+              cleaningCycle === option && onboardingStyles.optionButtonSelected,
+            ]}
+            onPress={() => handleCycleSelect(option)}>
+            <Text
+              style={[
+                onboardingStyles.optionText,
+                cleaningCycle === option && onboardingStyles.optionTextSelected,
+              ]}>
+              {option}
+            </Text>
+          </Pressable>
         ))}
       </View>
-      <Button
-        mode='contained'
-        onPress={handleNext}
-        disabled={!cleaningCycle}
-        style={onboardingStyles.nextButton}>
-        다음
-      </Button>
+
+      <View style={onboardingStyles.footer}>
+        <Pressable
+          style={[
+            onboardingStyles.nextButton,
+            !cleaningCycle && onboardingStyles.nextButtonDisabled,
+          ]}
+          disabled={!cleaningCycle}
+          onPress={handleNext}>
+          <Text
+            style={[
+              onboardingStyles.nextLabel,
+              !cleaningCycle && onboardingStyles.nextLabelDisabled,
+            ]}>
+            다음
+          </Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }

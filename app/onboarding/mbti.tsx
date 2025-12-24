@@ -1,9 +1,10 @@
+import { OnboardingHeader } from "@/components/OnboardingHeader";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { onboardingStyles } from "@/styles/onboarding";
 import { router } from "expo-router";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Pressable, TextInput, View } from "react-native";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MBTIScreen() {
@@ -49,30 +50,21 @@ export default function MBTIScreen() {
     router.push("/onboarding/hobby");
   };
 
+  const isNextDisabled = !mbti || !!errorMessage;
+
   return (
     <SafeAreaView style={onboardingStyles.container}>
-      <Text
-        variant='headlineMedium'
-        style={onboardingStyles.title}>
-        MBTI를 입력해주세요.
-      </Text>
+      <OnboardingHeader progress={0.8} />
+
+      <Text style={onboardingStyles.title}>MBTI를 입력해주세요</Text>
+
       <View style={{ marginVertical: 20 }}>
         <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: errorMessage ? "#FF0000" : "#E0E0E0",
-            borderRadius: 8,
-            padding: 15,
-            fontSize: 18,
-            textAlign: "center",
-            fontWeight: "bold",
-            letterSpacing: 4,
-            textTransform: "uppercase",
-          }}
-          placeholder='예: ISTJ, ENFP'
+          style={onboardingStyles.input}
+          placeholder="예: ISTJ, ENFP"
           value={mbti}
           onChangeText={handleMBTIChange}
-          autoCapitalize='characters'
+          autoCapitalize="characters"
           maxLength={4}
         />
         {errorMessage && (
@@ -87,13 +79,24 @@ export default function MBTIScreen() {
           </Text>
         )}
       </View>
-      <Button
-        mode='contained'
-        onPress={handleNext}
-        disabled={!mbti || !!errorMessage}
-        style={onboardingStyles.nextButton}>
-        다음
-      </Button>
+
+      <View style={onboardingStyles.footer}>
+        <Pressable
+          style={[
+            onboardingStyles.nextButton,
+            isNextDisabled && onboardingStyles.nextButtonDisabled,
+          ]}
+          disabled={isNextDisabled}
+          onPress={handleNext}>
+          <Text
+            style={[
+              onboardingStyles.nextLabel,
+              isNextDisabled && onboardingStyles.nextLabelDisabled,
+            ]}>
+            다음
+          </Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }

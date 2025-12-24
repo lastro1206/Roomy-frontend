@@ -1,10 +1,11 @@
+import { OnboardingHeader } from "@/components/OnboardingHeader";
 import { convertGenderToBackend } from "@/hooks/gender";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { onboardingStyles } from "@/styles/onboarding";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Pressable, View } from "react-native";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function GenderScreen() {
@@ -17,12 +18,7 @@ export default function GenderScreen() {
     setGender(selectedGender);
     const backendGender = convertGenderToBackend(selectedGender);
     setStoreGender(backendGender);
-    if (selectedGender === "남") {
-      setShowArmyQuestion(true);
-    } else {
-      // 여성인 경우 군필 질문 화면은 표시하지 않음
-      setShowArmyQuestion(false);
-    }
+    setShowArmyQuestion(selectedGender === "남");
   };
 
   const handleArmySelect = (armyStatus: string) => {
@@ -30,82 +26,84 @@ export default function GenderScreen() {
   };
 
   const handleNext = () => {
-    if (!gender) {
-      return;
-    }
-    if (gender === "남" && !army) {
-      return;
-    }
+    if (!gender) return;
+    if (gender === "남" && !army) return;
     router.push("/onboarding/age");
   };
 
+  // 군필 여부 화면
   if (showArmyQuestion) {
     return (
       <SafeAreaView style={onboardingStyles.container}>
-        <Text
-          variant='headlineMedium'
-          style={onboardingStyles.title}>
-          군필 여부를 선택해주세요.
-        </Text>
+        <OnboardingHeader progress={0.1} />
+        <Text style={onboardingStyles.title}>군필 여부를 선택해주세요</Text>
+
         <View style={onboardingStyles.buttonContainer}>
-          <Button
-            mode={army === "군필" ? "contained" : "outlined"}
-            onPress={() => handleArmySelect("군필")}
-            style={onboardingStyles.button}>
-            군필
-          </Button>
-          <Button
-            mode={army === "미필" ? "contained" : "outlined"}
-            onPress={() => handleArmySelect("미필")}
-            style={onboardingStyles.button}>
-            미필
-          </Button>
-          <Button
-            mode={army === "해당없음" ? "contained" : "outlined"}
-            onPress={() => handleArmySelect("해당없음")}
-            style={onboardingStyles.button}>
-            해당없음
-          </Button>
+          {["군필", "미필", "해당없음"].map((item) => (
+            <Pressable
+              key={item}
+              style={[
+                onboardingStyles.optionButton,
+                army === item && onboardingStyles.optionButtonSelected,
+              ]}
+              onPress={() => handleArmySelect(item)}>
+              <Text style={[onboardingStyles.optionText, army === item && onboardingStyles.optionTextSelected]}>{item}</Text>
+            </Pressable>
+          ))}
         </View>
-        <Button
-          mode='contained'
-          onPress={handleNext}
-          disabled={!army}
-          style={onboardingStyles.nextButton}>
-          다음
-        </Button>
+
+        <View style={onboardingStyles.footer}>
+  <Pressable
+    style={[
+      onboardingStyles.nextButton,
+      !army && onboardingStyles.nextButtonDisabled,
+    ]}
+    disabled={!army}
+    onPress={handleNext}>
+    <Text
+      style={[
+        onboardingStyles.nextLabel,
+        !army && onboardingStyles.nextLabelDisabled,
+      ]}>
+      다음
+    </Text>
+  </Pressable>
+</View>
       </SafeAreaView>
     );
   }
 
+  // 기본 성별 화면
   return (
     <SafeAreaView style={onboardingStyles.container}>
-      <Text
-        variant='headlineMedium'
-        style={onboardingStyles.title}>
-        성별을 선택해주세요.
-      </Text>
+      <OnboardingHeader progress={0.1} />
+      <Text style={onboardingStyles.title}>성별을 선택해주세요</Text>
+
       <View style={onboardingStyles.buttonContainer}>
-        <Button
-          mode={gender === "남" ? "contained" : "outlined"}
-          onPress={() => handleGenderSelect("남")}
-          style={onboardingStyles.button}>
-          남
-        </Button>
-        <Button
-          mode={gender === "여" ? "contained" : "outlined"}
-          onPress={() => handleGenderSelect("여")}
-          style={onboardingStyles.button}>
-          여
-        </Button>
+        {["남", "여"].map((item) => (
+          <Pressable
+            key={item}
+            style={[
+              onboardingStyles.optionButton,
+              gender === item && onboardingStyles.optionButtonSelected,
+            ]}
+            onPress={() => handleGenderSelect(item)}>
+            <Text style={[onboardingStyles.optionText, gender === item && onboardingStyles.optionTextSelected]}>{item}</Text>
+          </Pressable>
+        ))}
       </View>
-      <Button
-        mode='contained'
-        onPress={handleNext}
-        disabled={!gender}
-        style={onboardingStyles.nextButton}>
-        다음
-      </Button>
+
+      <View style={onboardingStyles.footer}>
+        <Pressable
+          style={[
+            onboardingStyles.nextButton,
+            !gender && onboardingStyles.nextButtonDisabled,
+          ]}
+          disabled={!gender}
+          onPress={handleNext}>
+          <Text style={onboardingStyles.nextLabel}>다음</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }

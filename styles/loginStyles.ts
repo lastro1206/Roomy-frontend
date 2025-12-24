@@ -48,9 +48,20 @@ export const loginStyles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText: {
-    color: "#fff",
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: "#5A81FA",
+    marginVertical: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  nextButtonDisabled: {
+    backgroundColor: "#E1E2E4",
+  },
+  nextLabel: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: "700",
+    color: "#ffffff",
   },
   bottomSpacer: {
     flex: 0.5,

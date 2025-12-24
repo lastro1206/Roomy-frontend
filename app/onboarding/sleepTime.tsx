@@ -1,10 +1,11 @@
+import { OnboardingHeader } from "@/components/OnboardingHeader";
 import { convertSleepTimeToNumber } from "@/hooks/sleepTime";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { onboardingStyles } from "@/styles/onboarding";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Pressable, View } from "react-native";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SleepTimeScreen() {
@@ -17,9 +18,7 @@ export default function SleepTimeScreen() {
     "오후 9시~10시",
     "오후 10시~11시",
     "오후 11시~12시",
-    "오전 12시~1시",
-    "오전 1시~2시",
-    "오전 2시 이후",
+    "오전 12시 이후"
   ];
 
   const handleTimeSelect = (time: string) => {
@@ -32,38 +31,55 @@ export default function SleepTimeScreen() {
   };
 
   const handleNext = () => {
-    if (!sleepTime || sleepTimeNumber === null) {
-      return;
-    }
-
+    if (!sleepTime || sleepTimeNumber === null) return;
     router.push("/onboarding/wakeUpTime");
   };
 
   return (
     <SafeAreaView style={onboardingStyles.container}>
-      <Text
-        variant='headlineMedium'
-        style={onboardingStyles.title}>
-        평소 취침 시간을 선택해주세요.
-      </Text>
+      <OnboardingHeader progress={0.35} />
+
+      <Text style={onboardingStyles.title}>평소 취침 시간을 선택해주세요</Text>
+
       <View style={onboardingStyles.buttonContainer}>
         {timeOptions.map((option) => (
-          <Button
+          <Pressable
             key={option}
-            mode={sleepTime === option ? "contained" : "outlined"}
-            onPress={() => handleTimeSelect(option)}
-            style={onboardingStyles.button}>
-            {option}
-          </Button>
+            style={[
+              onboardingStyles.optionButton,
+              sleepTime === option && onboardingStyles.optionButtonSelected,
+            ]}
+            onPress={() => handleTimeSelect(option)}>
+            <Text
+              style={[
+                onboardingStyles.optionText,
+                sleepTime === option && onboardingStyles.optionTextSelected,
+              ]}>
+              {option}
+            </Text>
+          </Pressable>
         ))}
       </View>
-      <Button
-        mode='contained'
-        onPress={handleNext}
-        disabled={!sleepTime || sleepTimeNumber === null}
-        style={onboardingStyles.nextButton}>
-        다음
-      </Button>
+
+      <View style={onboardingStyles.footer}>
+        <Pressable
+          style={[
+            onboardingStyles.nextButton,
+            (!sleepTime || sleepTimeNumber === null) &&
+              onboardingStyles.nextButtonDisabled,
+          ]}
+          disabled={!sleepTime || sleepTimeNumber === null}
+          onPress={handleNext}>
+          <Text
+            style={[
+              onboardingStyles.nextLabel,
+              (!sleepTime || sleepTimeNumber === null) &&
+                onboardingStyles.nextLabelDisabled,
+            ]}>
+            다음
+          </Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }

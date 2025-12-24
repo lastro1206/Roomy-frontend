@@ -1,10 +1,11 @@
+import { OnboardingHeader } from "@/components/OnboardingHeader";
 import { convertWakeUpTimeToNumber } from "@/hooks/wakeUpTime";
 import { useOnboardingStore } from "@/store/onboardingStore";
 import { onboardingStyles } from "@/styles/onboarding";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Pressable, View } from "react-native";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function WakeUpTimeScreen() {
@@ -19,20 +20,12 @@ export default function WakeUpTimeScreen() {
     "오전 6시~7시",
     "오전 7시~8시",
     "오전 8시~9시",
-    "오전 9시~10시",
-    "오전 10시~11시",
-    "오전 11시 이후",
+    "오전 9시 이후"
   ];
 
   const handleNext = () => {
-    if (!wakeUpTime || wakeUpTimeNumber === null) {
-      return;
-    }
-    if (showAlarmQuestion) {
-      if (wakeByAlarm === null) {
-        return;
-      }
-    }
+    if (!wakeUpTime || wakeUpTimeNumber === null) return;
+    if (showAlarmQuestion && wakeByAlarm === null) return;
     router.push("/onboarding/snoring");
   };
 
@@ -40,9 +33,7 @@ export default function WakeUpTimeScreen() {
     setWakeUpTime(time);
     const number = convertWakeUpTimeToNumber(time);
     setWakeUpTimeNumber(number);
-    if (number !== null) {
-      setWakeTime(number);
-    }
+    if (number !== null) setWakeTime(number);
     setShowAlarmQuestion(true);
   };
 
@@ -50,64 +41,106 @@ export default function WakeUpTimeScreen() {
     setWakeByAlarm(byAlarm);
   };
 
+  // 2단계: 알람 관련 질문
   if (showAlarmQuestion) {
     return (
       <SafeAreaView style={onboardingStyles.container}>
-        <Text
-          variant='headlineMedium'
-          style={onboardingStyles.title}>
-          알림 소리에 의해 일어나시나요?
-        </Text>
+        <OnboardingHeader progress={0.45} />
+
+        <Text style={onboardingStyles.title}>알림 소리에 의해 일어나시나요?</Text>
+
         <View style={onboardingStyles.buttonContainer}>
-          <Button
-            mode={wakeByAlarm === true ? "contained" : "outlined"}
-            onPress={() => handleAlarmSelect(true)}
-            style={onboardingStyles.button}>
-            네
-          </Button>
-          <Button
-            mode={wakeByAlarm === false ? "contained" : "outlined"}
-            onPress={() => handleAlarmSelect(false)}
-            style={onboardingStyles.button}>
-            아니오
-          </Button>
+          {[
+            { key: "YES", label: "네" },
+            { key: "NO", label: "아니오" },
+          ].map((item) => (
+            <Pressable
+              key={item.key}
+              style={[
+                onboardingStyles.optionButton,
+                wakeByAlarm === (item.key === "YES") &&
+                  onboardingStyles.optionButtonSelected,
+              ]}
+              onPress={() => handleAlarmSelect(item.key === "YES")}>
+              <Text
+                style={[
+                  onboardingStyles.optionText,
+                  wakeByAlarm === (item.key === "YES") &&
+                    onboardingStyles.optionTextSelected,
+                ]}>
+                {item.label}
+              </Text>
+            </Pressable>
+          ))}
         </View>
-        <Button
-          mode='contained'
-          onPress={handleNext}
-          disabled={wakeByAlarm === null}
-          style={onboardingStyles.nextButton}>
-          다음
-        </Button>
+
+        <View style={onboardingStyles.footer}>
+          <Pressable
+            style={[
+              onboardingStyles.nextButton,
+              wakeByAlarm === null && onboardingStyles.nextButtonDisabled,
+            ]}
+            disabled={wakeByAlarm === null}
+            onPress={handleNext}>
+            <Text
+              style={[
+                onboardingStyles.nextLabel,
+                wakeByAlarm === null && onboardingStyles.nextLabelDisabled,
+              ]}>
+              다음
+            </Text>
+          </Pressable>
+        </View>
       </SafeAreaView>
     );
   }
 
+  // 1단계: 기상 시간 선택
   return (
     <SafeAreaView style={onboardingStyles.container}>
-      <Text
-        variant='headlineMedium'
-        style={onboardingStyles.title}>
-        평소 기상 시간을 선택해주세요.
-      </Text>
+      <OnboardingHeader progress={0.4} />
+
+      <Text style={onboardingStyles.title}>평소 기상 시간을 선택해주세요</Text>
+
       <View style={onboardingStyles.buttonContainer}>
         {timeOptions.map((option) => (
-          <Button
+          <Pressable
             key={option}
-            mode={wakeUpTime === option ? "contained" : "outlined"}
-            onPress={() => handleTimeSelect(option)}
-            style={onboardingStyles.button}>
-            {option}
-          </Button>
+            style={[
+              onboardingStyles.optionButton,
+              wakeUpTime === option && onboardingStyles.optionButtonSelected,
+            ]}
+            onPress={() => handleTimeSelect(option)}>
+            <Text
+              style={[
+                onboardingStyles.optionText,
+                wakeUpTime === option && onboardingStyles.optionTextSelected,
+              ]}>
+              {option}
+            </Text>
+          </Pressable>
         ))}
       </View>
-      <Button
-        mode='contained'
-        onPress={handleNext}
-        disabled={wakeUpTime === null || wakeUpTimeNumber === null}
-        style={onboardingStyles.nextButton}>
-        다음
-      </Button>
+
+      <View style={onboardingStyles.footer}>
+        <Pressable
+          style={[
+            onboardingStyles.nextButton,
+            (!wakeUpTime || wakeUpTimeNumber === null) &&
+              onboardingStyles.nextButtonDisabled,
+          ]}
+          disabled={!wakeUpTime || wakeUpTimeNumber === null}
+          onPress={handleNext}>
+          <Text
+            style={[
+              onboardingStyles.nextLabel,
+              (!wakeUpTime || wakeUpTimeNumber === null) &&
+                onboardingStyles.nextLabelDisabled,
+            ]}>
+            다음
+          </Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }

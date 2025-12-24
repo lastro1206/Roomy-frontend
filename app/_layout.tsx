@@ -22,7 +22,7 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 export const unstable_settings = {
-  anchor: "userLogin",
+  initialRouteName: "userLogin",
 };
 
 // 전역 스타일 설정
@@ -92,7 +92,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <Stack>
               <Stack.Screen
-                name='userLogin'
+                name='index'
                 options={{ headerShown: false }}
               />
               <Stack.Screen
@@ -176,7 +176,47 @@ export default function RootLayout() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen
+                name='matchingResult'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='matchingList'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='matchingDetail'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='matchingComplete'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='repairReport'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
                 name='mypage'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='outhome'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='replacemeal'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='faq'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='lifenotice'
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name='menu'
                 options={{ headerShown: false }}
               />
             </Stack>

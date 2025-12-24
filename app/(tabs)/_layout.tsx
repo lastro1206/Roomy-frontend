@@ -1,5 +1,5 @@
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 
@@ -16,9 +16,9 @@ export default function TabLayout() {
         options={{
           title: "홈",
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              size={28}
-              name='home'
+            <Octicons
+              size={24}
+              name='home-fill'
               color={color}
             />
           ),
@@ -29,9 +29,9 @@ export default function TabLayout() {
         options={{
           title: "매칭",
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              size={28}
-              name='search'
+            <Ionicons
+              size={24}
+              name='extension-puzzle-sharp'
               color={color}
             />
           ),
@@ -42,9 +42,9 @@ export default function TabLayout() {
         options={{
           title: "생활관리",
           tabBarIcon: ({ color }) => (
-            <FontAwesome
-              size={28}
-              name='building'
+            <FontAwesome6
+              size={24}
+              name='building-circle-check'
               color={color}
             />
           ),
@@ -56,7 +56,7 @@ export default function TabLayout() {
           title: "마이페이지",
           tabBarIcon: ({ color }) => (
             <FontAwesome
-              size={28}
+              size={24}
               name='user'
               color={color}
             />
